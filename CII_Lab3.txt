@@ -1,0 +1,50 @@
+﻿# Переменные: Имя, Мин, Макс
+VAR Moisture 0 100
+VAR Temp 0 40
+VAR Sun 0 100
+VAR Water 0 60
+
+# Термы для Влажности почвы
+TERM Moisture Dry 0 0 30
+TERM Moisture Normal 20 50 80
+TERM Moisture Wet 70 100 100
+
+# Термы для Температуры
+TERM Temp Cold 0 0 15
+TERM Temp Warm 15 25 35
+TERM Temp Hot 30 40 40
+
+# Термы для Освещения
+TERM Sun Night 0 0 30
+TERM Sun Day 30 70 100
+
+# Термы для Полива (Время в секундах)
+TERM Water None 0 0 10
+TERM Water Short 5 20 35
+TERM Water Medium 30 40 50
+TERM Water Long 45 60 60
+
+# ПРАВИЛА ДЛЯ 1 ВХОДА (Только Влажность почвы) - Пункт 2
+RULE IF Moisture=Dry THEN Water=Long
+RULE IF Moisture=Dry THEN Water=Medium
+RULE IF Moisture=Normal THEN Water=Short
+RULE IF Moisture=Normal THEN Water=Medium
+RULE IF Moisture=Wet THEN Water=Short
+RULE IF Moisture=Wet THEN Water=None
+RULE IF Moisture=Normal THEN Water=None
+
+# ПРАВИЛА ДЛЯ 3 ВХОДОВ - Пункт 3
+# Сухая почва
+RULE IF Moisture=Dry AND Temp=Hot AND Sun=Day THEN Water=Long
+RULE IF Moisture=Dry AND Temp=Warm THEN Water=Medium
+RULE IF Moisture=Dry AND Sun=Night THEN Water=Short
+
+# Нормальная почва
+RULE IF Moisture=Normal AND Temp=Hot AND Sun=Day THEN Water=Medium
+RULE IF Moisture=Normal AND Temp=Warm THEN Water=Short
+RULE IF Moisture=Normal AND Sun=Night THEN Water=Short
+
+# Мокрая почва
+RULE IF Moisture=Wet AND Temp=Hot THEN Water=Short
+RULE IF Moisture=Wet AND Sun=Night THEN Water=None
+RULE IF Moisture=Wet THEN Water=None
